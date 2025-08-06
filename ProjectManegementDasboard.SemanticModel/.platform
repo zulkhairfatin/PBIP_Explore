@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "ProjectManegementDasboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "f6aeea14-c2f1-4f11-89f6-a380ba7ea33e"
+  }
+}

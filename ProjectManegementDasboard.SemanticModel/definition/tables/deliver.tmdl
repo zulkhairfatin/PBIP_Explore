@@ -1,0 +1,88 @@
+table deliver
+	lineageTag: 95cb8d65-6ee4-4986-a8e2-0dad4c660ef5
+
+	column CD_IO
+		dataType: string
+		lineageTag: 0c8ab1fa-f32c-446c-a280-2743fe031ffe
+		summarizeBy: none
+		sourceColumn: CD_IO
+
+		annotation SummarizationSetBy = Automatic
+
+	column code_deliv
+		dataType: string
+		lineageTag: 9ee68419-caab-4c2d-85c9-a45c5f09171d
+		summarizeBy: none
+		sourceColumn: code_deliv
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code_IO1
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: eb42a34d-a27d-4816-b190-3ebf8d93481d
+		summarizeBy: none
+		sourceColumn: Code_IO1
+
+		variation Variation
+			isDefault
+			relationship: da4e0d2c-ffb7-4b9a-9717-cf990d076c8d
+			defaultHierarchy: LocalDateTable_8cbe5475-a9ed-4fe1-8576-390e71869e85.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column 'Intermediate Outcome'
+		dataType: string
+		lineageTag: 715ebfca-6f99-40bd-81b2-e0e05e45bcf6
+		summarizeBy: none
+		sourceColumn: Intermediate Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intervention Output (Deliverables)'
+		dataType: string
+		lineageTag: b4aaaf9f-194f-49c6-864d-e5559a34e304
+		summarizeBy: none
+		sourceColumn: Intervention Output (Deliverables)
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intervention Output 1'
+		dataType: string
+		lineageTag: b2835f41-59b2-48d8-a832-c2d7604332da
+		summarizeBy: none
+		sourceColumn: Intervention Output 1
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intervention Output 2'
+		dataType: string
+		lineageTag: 99cbcd04-bb6f-4be6-a268-2679ca7be7a8
+		summarizeBy: none
+		sourceColumn: Intervention Output 2
+
+		annotation SummarizationSetBy = Automatic
+
+	column perncent
+		dataType: int64
+		formatString: 0
+		lineageTag: a054525f-5fed-4814-ba1b-5df1be426a4e
+		summarizeBy: sum
+		sourceColumn: perncent
+
+		annotation SummarizationSetBy = Automatic
+
+	partition deliver = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\alviz\Downloads\deliver.csv"),[Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CD_IO", type text}, {"code_deliv", type text}, {"Code_IO1", type date}, {"Intermediate Outcome", type text}, {"Intervention Output (Deliverables)", type text}, {"Intervention Output 1", type text}, {"Intervention Output 2", type text}, {"perncent", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

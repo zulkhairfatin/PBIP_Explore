@@ -1,0 +1,80 @@
+table Document
+	lineageTag: 670461aa-fc08-4cd0-934e-85846466a767
+
+	column Actor
+		dataType: string
+		lineageTag: 2a2d8074-3dc4-4ecf-b460-efbe814c03ae
+		summarizeBy: none
+		sourceColumn: Actor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code
+		dataType: string
+		lineageTag: b1e79bc6-e224-4cfc-8bdd-b68cd04fa5c5
+		summarizeBy: none
+		sourceColumn: Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Target
+		dataType: string
+		lineageTag: dea8ed09-feb6-4e75-82ca-c487f26464b3
+		summarizeBy: none
+		sourceColumn: Year_Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Document_Number
+		dataType: string
+		lineageTag: 2293a01e-3e21-4e11-9c2d-c3680f930b76
+		summarizeBy: none
+		sourceColumn: Document_Number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 18bdb65b-245f-45c3-a7a5-591eaf5cb86b
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Check
+		dataType: string
+		lineageTag: cba0e07d-7623-4acb-af98-46de06df6307
+		summarizeBy: none
+		sourceColumn: Check
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status = IF('Document'[Check] = "Done", "Completed", "Pending")
+		lineageTag: d558e3c6-2534-48dc-82b7-e163d0195007
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Check_List = IF(Document[Check] = "Done", "☑", Blank())
+		lineageTag: 4c083b01-f6ac-4533-9337-7c40398d2f91
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Document = m
+		mode: import
+		source =
+				let
+				    Source = Web.BrowserContents("https://docs.google.com/spreadsheets/d/e/2PACX-1vTXm24zv8uBuNbcYP-Hilz9_BcCC1e9mdHLgE6HmoucEU12laiAgTLqBXWilDnMsw1CJNNmY6VCND0S/pubhtml"),
+				    #"Extracted Table From Html" = Html.Table(Source, {{"Column1", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}, {"Column4", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(4)"}, {"Column5", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(5)"}, {"Column6", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(6)"}, {"Column7", "DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(7)"}}, [RowSelector="DIV:nth-child(2) > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Extracted Table From Html",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns",1),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true])
+				in
+				    #"Promoted Headers"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

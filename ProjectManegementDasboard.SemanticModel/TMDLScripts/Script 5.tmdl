@@ -1,0 +1,8 @@
+createOrReplace
+
+	relationship 0ddcec26-a9db-c75f-0172-1d9f79fe5ac4
+		crossFilteringBehavior: bothDirections
+		toCardinality: many
+		fromColumn: KPI.Intermediate_Outcome_Indicator
+		toColumn: Main.Intermediate_Outcome_Indicator
+

@@ -1,0 +1,112 @@
+table Safeguard
+	lineageTag: 3bbe1f4a-c0df-4b3d-b7b7-fc9e9dd7668f
+
+	column Safeguard_ID
+		dataType: string
+		lineageTag: 1c22c30b-29f0-42b6-8b44-2769029ad07d
+		summarizeBy: none
+		sourceColumn: Safeguard_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column WP
+		dataType: string
+		lineageTag: b2d370af-d1f9-4b81-9fa2-9381bc75b045
+		summarizeBy: none
+		sourceColumn: WP
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 425e284b-354d-48e5-be36-3e56d14bed90
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Target
+		dataType: int64
+		formatString: 0
+		lineageTag: 38b55087-a926-4409-ab4e-54d524fca79d
+		summarizeBy: sum
+		sourceColumn: Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Actual
+		dataType: int64
+		formatString: 0
+		lineageTag: 91fa56f1-0421-4125-ab7b-fc7ed3bdc868
+		summarizeBy: sum
+		sourceColumn: Actual
+
+		annotation SummarizationSetBy = Automatic
+
+	column Achieve
+		dataType: string
+		lineageTag: a50af084-e05f-49eb-92f3-68aa9acddc77
+		summarizeBy: none
+		sourceColumn: Achieve
+
+		annotation SummarizationSetBy = Automatic
+
+	column Unit
+		dataType: string
+		lineageTag: 8a1aed7e-2a65-447b-b511-71732c21dc3d
+		summarizeBy: none
+		sourceColumn: Unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column Risk_Type
+		dataType: string
+		lineageTag: debbd727-21fb-481d-911e-322753f77cd2
+		summarizeBy: none
+		sourceColumn: Risk_Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a82bc6a-f7b3-43ad-b035-798c95e0c5f9
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Province
+		dataType: string
+		lineageTag: c4761943-0c52-4311-ae7c-9305cda289a5
+		summarizeBy: none
+		sourceColumn: Province
+
+		annotation SummarizationSetBy = Automatic
+
+	column Notes
+		dataType: string
+		lineageTag: 53164641-4cf5-4583-85f7-b25cca92fea1
+		summarizeBy: none
+		sourceColumn: Notes
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Safeguard = m
+		mode: import
+		source =
+				let
+				    Source = Web.BrowserContents("https://docs.google.com/spreadsheets/d/e/2PACX-1vTXm24zv8uBuNbcYP-Hilz9_BcCC1e9mdHLgE6HmoucEU12laiAgTLqBXWilDnMsw1CJNNmY6VCND0S/pubhtml"),
+				    #"Extracted Table From Html" = Html.Table(Source, {{"Column1", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}, {"Column4", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(4)"}, {"Column5", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(5)"}, {"Column6", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(6)"}, {"Column7", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(7)"}, {"Column8", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(8)"}, {"Column9", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(9)"}, {"Column10", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(10)"}, {"Column11", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(11)"}, {"Column12", "DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(12)"}}, [RowSelector="DIV:nth-child(4) > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Extracted Table From Html",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}, {"Column10", type text}, {"Column11", type text}, {"Column12", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns",1),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Target", Int64.Type}, {"Actual", Int64.Type}, {"Year", Int64.Type}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

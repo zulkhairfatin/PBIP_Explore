@@ -1,0 +1,20 @@
+createOrReplace
+
+	relationship 47757280-2c3b-5454-117f-8f135e1d689b
+		crossFilteringBehavior: bothDirections
+		toCardinality: many
+		fromColumn: Issue.MAIN_WP
+		toColumn: Main.MAIN_WP
+
+	relationship 0ddcec26-a9db-c75f-0172-1d9f79fe5ac4
+		crossFilteringBehavior: bothDirections
+		toCardinality: many
+		fromColumn: KPI.Intermediate_Outcome_Indicator
+		toColumn: Main.Intermediate_Outcome_Indicator
+
+	relationship 65ef9075-a4c9-df07-e95d-8f4917a5ad71
+		crossFilteringBehavior: bothDirections
+		toCardinality: many
+		fromColumn: Main.WP
+		toColumn: Safeguard.WP
+

@@ -1,0 +1,54 @@
+table KPI
+	lineageTag: 5266e083-1ac6-407f-9282-9234871762f5
+
+	column Intermediate_Outcome_Indicator
+		dataType: string
+		lineageTag: 452d8c26-2b8b-4e7c-80b5-2c69d5bce211
+		summarizeBy: none
+		sourceColumn: Intermediate_Outcome_Indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	column KPI_ID
+		dataType: string
+		lineageTag: 6f8a45b3-8e9b-4a2d-8c3d-67dfc24e28f5
+		summarizeBy: none
+		sourceColumn: KPI_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: 541752af-388e-43c7-aaf2-4681b54d64c3
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Score
+		dataType: int64
+		formatString: 0
+		lineageTag: 0354d11e-5b91-4661-b7cd-56a63b1efd28
+		summarizeBy: sum
+		sourceColumn: Score
+
+		annotation SummarizationSetBy = Automatic
+
+	partition KPI = m
+		mode: import
+		source =
+				let
+				    Source = Web.BrowserContents("https://docs.google.com/spreadsheets/d/e/2PACX-1vTXm24zv8uBuNbcYP-Hilz9_BcCC1e9mdHLgE6HmoucEU12laiAgTLqBXWilDnMsw1CJNNmY6VCND0S/pubhtml"),
+				    #"Extracted Table From Html" = Html.Table(Source, {{"Column1", "DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}, {"Column4", "DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(4)"}, {"Column5", "DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(5)"}}, [RowSelector="DIV:nth-child(3) > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Extracted Table From Html",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns",1),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Score", Int64.Type}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

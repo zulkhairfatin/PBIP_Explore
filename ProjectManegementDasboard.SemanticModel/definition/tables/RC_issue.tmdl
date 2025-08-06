@@ -1,0 +1,34 @@
+table RC_issue
+	lineageTag: c22a2813-4b57-424a-8721-2df00b5fd5b6
+
+	column Issue
+		dataType: string
+		lineageTag: 463b6772-cc15-4845-a0fc-e1689f1294d6
+		summarizeBy: none
+		sourceColumn: Issue
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Root Cause (Biodiversity and Climate Problem)'
+		dataType: string
+		lineageTag: 80297c9b-b9d1-4252-af41-147a5a9e9108
+		summarizeBy: none
+		sourceColumn: Root Cause (Biodiversity and Climate Problem)
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RC_issue = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\alviz\Downloads\deliver4.csv"),[Delimiter=",", Columns=2, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Issue", type text}, {"Root Cause (Biodiversity and Climate Problem)", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

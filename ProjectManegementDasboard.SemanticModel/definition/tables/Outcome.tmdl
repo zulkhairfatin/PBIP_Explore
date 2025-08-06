@@ -1,0 +1,42 @@
+table Outcome
+	lineageTag: a8c2f6f1-6f93-4946-9a70-4e06ab8fb21c
+
+	column Impact
+		dataType: string
+		lineageTag: 202b09d4-f3ec-40e8-9674-19d987220740
+		summarizeBy: none
+		sourceColumn: Impact
+
+		annotation SummarizationSetBy = Automatic
+
+	column Outcome
+		dataType: string
+		lineageTag: 6442b48e-7aaa-4be8-8a74-011d0e76a731
+		summarizeBy: none
+		sourceColumn: Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Outcome Indicator'
+		dataType: string
+		lineageTag: a7aa3990-a631-4ab3-be5b-fa78ab7d5e8e
+		summarizeBy: none
+		sourceColumn: Outcome Indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Outcome = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\alviz\Downloads\deliver2.csv"),[Delimiter=",", Columns=3, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"Impact", type text}, {"Outcome", type text}, {"Outcome Indicator", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

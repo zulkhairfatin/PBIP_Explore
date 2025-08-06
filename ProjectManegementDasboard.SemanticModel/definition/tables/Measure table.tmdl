@@ -1,0 +1,91 @@
+table 'Measure table'
+	lineageTag: d68b4c72-d2c8-4066-9236-0475cf65d9b6
+
+	/// kebalikan dari rata-rata progres
+	measure invers_progres = ```
+			100 - AVERAGE(Main[Progress]) 
+			```
+		lineageTag: b3556285-4187-417f-8734-185f6b1e9143
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// random saja
+	measure JumlahCompleted = ```
+			
+			CALCULATE(
+			    COUNTROWS('Document'),
+			    'Document'[Status] = "Completed"
+			)
+			
+			```
+		lineageTag: b605a789-2592-49c3-afaa-62ec5252787e
+
+	/// kebalikan dari rata-rata progres
+	measure Jumlah_Belum_Lengkap = ```
+			
+			CALCULATE(
+			    COUNTROWS('Document'),
+			    'Document'[Check] = "-"
+			)
+			
+			```
+		formatString: 0
+		lineageTag: a4a6eeb4-b2c7-4c1f-b347-9c9fbe16c246
+
+	measure JumlahPending = ```
+			
+			CALCULATE(
+			    COUNTROWS('Document'),
+			    'Document'[Status] = "Pending"
+			)
+			
+			```
+		lineageTag: f24418d6-3e3b-4984-8cc4-9946db2f6c37
+
+	measure RataRataProgress = ```
+			AVERAGEX(
+			    VALUES('Document'[Actor]),
+			    CALCULATE(AVERAGE('Main'[Progress_%]))
+			)
+			
+			```
+		lineageTag: c9427226-728b-4f88-bee4-b03e9c77b9a2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure string_progrest_total = ROUND(AVERAGE(Main[Progress]), 2) & " %"
+		lineageTag: 99bd8561-7b82-4ca1-85e4-dc19a8cd5e09
+
+	measure Done = IF(ISBLANK(CALCULATE(COUNT('Main'[Code]), Main[Progress] = 100)), 0, CALCULATE(COUNT('Main'[Code]), 'Main'[Progress] = 100))
+		formatString: 0
+		lineageTag: bb27de5c-0eac-4fbb-aa79-267d5a94b11c
+
+	measure not_start = CALCULATE(COUNT('Main'[Code]), 'Main'[Progress] = 0)
+		formatString: 0
+		lineageTag: 1518eb4c-7a40-4d30-845e-0a1c02245823
+
+	measure on_going = CALCULATE(COUNT('Main'[Code]), AND('Main'[Progress] > 0, 'Main'[Progress] < 100))
+		formatString: 0
+		lineageTag: 97e9e6b8-d69b-47fb-8a1c-4d2170711f6e
+
+	measure on_going_30 = CALCULATE(COUNT('Main'[Code]), AND('Main'[Progress] > 0, 'Main'[Progress] < 30))
+		lineageTag: 73050dcd-c69c-4c6d-9a31-e6f49222b00f
+
+	measure on_going_70 = CALCULATE(COUNT('Main'[Code]), AND('Main'[Progress] > 30, 'Main'[Progress] < 70))
+		lineageTag: 9365ace2-1119-4f08-9787-61217d04bee0
+
+	measure on_going_100 = CALCULATE(COUNT('Main'[Code]), AND('Main'[Progress] > 70, 'Main'[Progress] < 100))
+		lineageTag: d50b292b-c0d0-4c25-a0d6-28687a0b7483
+
+	partition 'Measure table' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

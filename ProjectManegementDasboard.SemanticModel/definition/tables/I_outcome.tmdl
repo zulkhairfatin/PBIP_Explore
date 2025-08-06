@@ -1,0 +1,50 @@
+table I_outcome
+	lineageTag: 9588949c-10cb-4bdf-9698-cffa485ad326
+
+	column CODE_IO
+		dataType: string
+		lineageTag: 949d2fc1-db4a-48fe-be89-d524cba1f6bf
+		summarizeBy: none
+		sourceColumn: CODE_IO
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intermediate Outcome'
+		dataType: string
+		lineageTag: 67d9d8d1-9a6f-408c-ad08-1fcd8e18da33
+		summarizeBy: none
+		sourceColumn: Intermediate Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Intermediate Outcome Indicator'
+		dataType: string
+		lineageTag: 80ba616f-2543-461e-af21-d42da5cde7b3
+		summarizeBy: none
+		sourceColumn: Intermediate Outcome Indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	column Outcome
+		dataType: string
+		lineageTag: 0f793ae6-ba8d-4419-89b2-c1e4b77dc2dc
+		summarizeBy: none
+		sourceColumn: Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	partition I_outcome = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\alviz\Downloads\deliver3.csv"),[Delimiter=",", Columns=4, Encoding=65001, QuoteStyle=QuoteStyle.None]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}}),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Changed Type", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"CODE_IO", type text}, {"Intermediate Outcome", type text}, {"Intermediate Outcome Indicator", type text}, {"Outcome", type text}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

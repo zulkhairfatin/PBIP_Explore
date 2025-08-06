@@ -1,0 +1,35 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.145.1602.0 (25.07)+10647c9fa319b5e39936cdb21328038c371d1fe4
+
+annotation PBI_QueryOrder = ["Main","Document","KPI","Safeguard","Issue","deliver","Outcome","I_outcome","RC_issue","Measure table"]
+
+annotation PBI_ProTooling = ["TMDLView_Desktop","DevMode"]
+
+ref table Main
+ref table DateTableTemplate_2b57e321-d931-478b-bb4e-7f101b0327a0
+ref table LocalDateTable_8a40954d-15ed-44e0-809f-3815d109490a
+ref table LocalDateTable_bef212aa-2f0e-466a-873b-67ab41485df0
+ref table Document
+ref table KPI
+ref table Safeguard
+ref table Issue
+ref table deliver
+ref table LocalDateTable_8cbe5475-a9ed-4fe1-8576-390e71869e85
+ref table Outcome
+ref table I_outcome
+ref table RC_issue
+ref table measure_table
+ref table 'Measure table'
+ref table Table
+
+ref cultureInfo en-US
+

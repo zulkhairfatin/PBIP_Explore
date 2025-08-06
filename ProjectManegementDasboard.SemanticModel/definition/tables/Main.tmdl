@@ -1,0 +1,187 @@
+table Main
+	lineageTag: c19fb268-1012-4aa9-9ee2-d125d02f4ec4
+
+	measure 'Rerata Progress' = SUM('Main'[Progress_%])/COUNT('Main'[ID])
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: cbcec29a-ea09-436b-8def-3895dfee0769
+
+	column MAIN_WP
+		dataType: int64
+		formatString: 0
+		lineageTag: 2aa5ba5b-0d6b-458d-a8cc-9e4d53d9f5f7
+		summarizeBy: none
+		sourceColumn: MAIN_WP
+
+		annotation SummarizationSetBy = Automatic
+
+	column MAIN_WP_Outcome
+		dataType: string
+		lineageTag: 48134f00-4bd9-49aa-94c7-1e927724581b
+		summarizeBy: none
+		sourceColumn: MAIN_WP_Outcome
+
+		annotation SummarizationSetBy = Automatic
+
+	column WP
+		dataType: string
+		lineageTag: 2b295534-ccc2-4837-896f-47b7babcf11e
+		summarizeBy: none
+		sourceColumn: WP
+
+		annotation SummarizationSetBy = Automatic
+
+	column WP_Deliverables
+		dataType: string
+		lineageTag: 738381d5-c81f-4660-b843-b079d9150658
+		summarizeBy: none
+		sourceColumn: WP_Deliverables
+
+		annotation SummarizationSetBy = Automatic
+
+	column Actor
+		dataType: string
+		lineageTag: a77cba93-9a75-4223-aaef-3058dae05047
+		summarizeBy: none
+		sourceColumn: Actor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Code
+		dataType: string
+		lineageTag: c68f015b-af46-4425-ab75-6c977dc33f25
+		summarizeBy: none
+		sourceColumn: Code
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year_Target
+		dataType: int64
+		formatString: 0
+		lineageTag: faadffdc-f494-4fe5-b0bc-8b7d9ea8d523
+		summarizeBy: sum
+		sourceColumn: Year_Target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Description
+		dataType: string
+		lineageTag: ca2ebcdf-de15-4b49-8089-411465301ca9
+		summarizeBy: none
+		sourceColumn: Description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Start_Date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 15321724-518c-41e2-95e0-fdc8b21729e6
+		summarizeBy: none
+		sourceColumn: Start_Date
+
+		variation Variation
+			isDefault
+			relationship: add3c0ad-d3fc-48d1-a318-28a72876e8a9
+			defaultHierarchy: LocalDateTable_8a40954d-15ed-44e0-809f-3815d109490a.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column End_Date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 23a2bd25-dae9-4480-b2f9-33937ef203f7
+		summarizeBy: none
+		sourceColumn: End_Date
+
+		variation Variation
+			isDefault
+			relationship: 09108820-a3b9-4ddf-95c0-75f53295a468
+			defaultHierarchy: LocalDateTable_bef212aa-2f0e-466a-873b-67ab41485df0.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Progress
+		dataType: int64
+		formatString: 0
+		lineageTag: 2658da7f-bfd7-4372-bed5-fe293961170a
+		summarizeBy: sum
+		sourceColumn: Progress
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type
+		dataType: string
+		lineageTag: 3f19416f-0c5b-4b2a-a0b4-b4dd6bcf908c
+		summarizeBy: none
+		sourceColumn: Type
+
+		annotation SummarizationSetBy = Automatic
+
+	column Intermediate_Outcome_Indicator
+		dataType: string
+		lineageTag: a36a3581-2fb1-4d31-bece-5402d62b8a67
+		summarizeBy: none
+		sourceColumn: Intermediate_Outcome_Indicator
+
+		annotation SummarizationSetBy = Automatic
+
+	column Conector = ```
+			IF('Main'[code] = "1.1.1", "1.1.2", BLANK()) 
+			```
+		lineageTag: 1c75f6e3-d3b4-44e0-8f19-766a5b71f089
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ID = 'Main'[Actor]&'Main'[Code]&'Main'[Year_Target]
+		lineageTag: ca18700d-91b2-42c9-99db-a5131a38562d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Datediff = DATEDIFF('Main'[Start_Date],'Main'[End_Date],DAY)
+		formatString: 0
+		lineageTag: 7f85ee46-15cd-4c33-905e-c6c81591a173
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Progress_% = 'Main'[Progress]/100
+		lineageTag: 320939a3-a1cb-48fb-ae1b-f35772e29d4a
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Project_Status =
+			
+			SWITCH(TRUE(),
+			    ISBLANK('Main'[Start_Date]) || ISBLANK('Main'[End_Date]), "Tanggal Tidak Lengkap",
+			    'Main'[End_Date] < TODAY() && 'Main'[Progress_%]<1, "Diluar Target",
+			    'Main'[End_Date] < TODAY(), "Selesai",
+			    'Main'[Start_Date] > TODAY(), "Belum Mulai",
+			    "Sedang Berjalan"
+			)
+		lineageTag: 4c9d8346-6bf8-4c50-b643-5a02e4a3282a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Main = m
+		mode: import
+		source =
+				let
+				    Source = Web.BrowserContents("https://docs.google.com/spreadsheets/d/e/2PACX-1vTXm24zv8uBuNbcYP-Hilz9_BcCC1e9mdHLgE6HmoucEU12laiAgTLqBXWilDnMsw1CJNNmY6VCND0S/pubhtml"),
+				    #"Extracted Table From Html" = Html.Table(Source, {{"Column1", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(1)"}, {"Column2", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(2)"}, {"Column3", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(3)"}, {"Column4", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(4)"}, {"Column5", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(5)"}, {"Column6", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(6)"}, {"Column7", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(7)"}, {"Column8", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(8)"}, {"Column9", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(9)"}, {"Column10", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(10)"}, {"Column11", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(11)"}, {"Column12", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(12)"}, {"Column13", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(13)"}, {"Column14", "DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR > :nth-child(14)"}}, [RowSelector="DIV:nth-child(1) > DIV.ritz.grid-container > TABLE.waffle > * > TR"]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Extracted Table From Html",{{"Column1", Int64.Type}, {"Column2", type text}, {"Column3", type text}, {"Column4", type text}, {"Column5", type text}, {"Column6", type text}, {"Column7", type text}, {"Column8", type text}, {"Column9", type text}, {"Column10", type text}, {"Column11", type text}, {"Column12", type text}, {"Column13", type text}, {"Column14", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"}),
+				    #"Removed Top Rows" = Table.Skip(#"Removed Columns",1),
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Removed Top Rows", [PromoteAllScalars=true]),
+				    #"Changed Type1" = Table.TransformColumnTypes(#"Promoted Headers",{{"MAIN_WP", Int64.Type}, {"Year_Target", Int64.Type}, {"Start_Date", type datetime}, {"End_Date", type datetime}, {"Progress", Int64.Type}})
+				in
+				    #"Changed Type1"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
