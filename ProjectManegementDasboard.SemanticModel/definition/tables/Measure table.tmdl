@@ -80,6 +80,9 @@ table 'Measure table'
 	measure on_going_110 = CALCULATE(COUNT('Main'[Code]), AND('Main'[Progress] > 70, 'Main'[Progress] < 100))
 		lineageTag: 91710451-dd75-48ee-9b0f-d779451d0687
 
+	measure Measure = 'Measure table'[Done] & "?"
+		lineageTag: 3ca859cb-b227-444a-b39c-ff9dc47b368b
+
 	partition 'Measure table' = m
 		mode: import
 		source =
